@@ -9,6 +9,11 @@ Or C# / C++ .. but then we are stuck with issues like "Linux or Windows"...
 
 I wrote it using Python 3.7.  I did not put a big effort in making it pretty (a mix of gl
 
+# License 
+Non at all
+
+Feel free to use this as you wish, but don't blame me for any bugs or credit me in any way :)
+
 # Usage
 Edit the file to choose the com port used - for me, the CH340 ended up with COM7
 
