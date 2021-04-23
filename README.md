@@ -14,6 +14,11 @@ Non at all
 
 Feel free to use this as you wish, but don't blame me for any bugs or credit me in any way :)
 
+# Prerequesites
+%> pip install serial
+or:
+%> python -m pip install ./serial-0.0.97.tar.gz (download from https://pypi.org/project/serial/)
+
 # Usage
 Edit the file to choose the com port used - for me, the CH340 ended up with COM7
 
