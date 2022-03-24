@@ -1,3 +1,6 @@
+# See also
+If problems, look at https://github.com/williamblair333/usb_ch340_relay_control. He commented "I uninstalled serial and installed pyserial. Everything seemed to work after that.".
+
 # usb_ch340_4x_relay_control
 "LCUS-4 USB CH340 Chip 4x Relay Control" written in Python
 
@@ -7,7 +10,7 @@ Python is probably the easiest way to control this device - using "tera term" or
 
 Or C# / C++ .. but then we are stuck with issues like "Linux or Windows"...
 
-I wrote it using Python 3.7.  I did not put a big effort in making it pretty (a mix of gl
+I wrote it using Python 3.7.  I did not put a big effort in making it pretty (a mix of globals & functions..) and lacking __main__ pattern.
 
 # License 
 Non at all
