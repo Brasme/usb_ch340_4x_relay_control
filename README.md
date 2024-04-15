@@ -19,15 +19,22 @@ Feel free to use this as you wish, but don't blame me for any bugs or credit me 
 
 # Prerequesites
 %> pip install serial
+%> pip install pyserial
 or:
 %> python -m pip install ./serial-0.0.97.tar.gz (download from https://pypi.org/project/serial/)
 
 # Usage
 Edit the file to choose the com port used - for me, the CH340 ended up with COM7
 
-Run it (cmd):
+Run it (cmd) - pure "app":
 ```
-%> python ch340_relay_control.py
+%> python ch340_relay.py
+```
+
+Or as TCP server & clients :
+```
+%> python ch340_relay_server.py <port>
+%> python ch340_relay_client.py <host> <port>
 ```
 
 # Typical output
