@@ -9,7 +9,7 @@ import threading
 import time
 
 class RelayClient:
-    def __init__(self,hostname,tcpPort):
+    def __init__(self,hostname,tcpPort,localPort):
         self.running=False
         self.status=m.Status()
         self.verbose=0
@@ -17,7 +17,11 @@ class RelayClient:
             self.host=hostname
             self.tcpPort=tcpPort
             self.socket=socket.socket()
+            print(f'Connect to {(self.host,self.tcpPort)}')
+            if localPort!=0:
+                self.socket.bind(('0.0.0.0',localPort))
             self.socket.connect((self.host,self.tcpPort))            
+            
         except socket.error:    
             print(f'Hmm... socket issues to TCP port {hostname}:{tcpPort}, bail out')
             return
@@ -65,11 +69,17 @@ class RelayClient:
 if __name__ == "__main__":
     hostname=socket.gethostname()
     tcpPort=12355
+    localPort=0
     if len(sys.argv)>1:
         hostname=sys.argv[1];
     if len(sys.argv)>2:
         tcpPort=int(sys.argv[2]);
-    client=RelayClient(hostname,tcpPort)    
+    if len(sys.argv)>2:
+        try:
+            localPort=int(sys.argv[3]);
+        except:
+            localPort=0
+    client=RelayClient(hostname,tcpPort,localPort)    
     client.send_option(5)
     time.sleep(1)
     doRun=True
