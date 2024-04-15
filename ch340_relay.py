@@ -91,7 +91,7 @@ class Relay:
         
 
 if __name__ == "__main__":
-    # For test only
+    # For run as standalone console app
     com='COM7'
     if len(sys.argv)>1:
         com=sys.argv[1]
