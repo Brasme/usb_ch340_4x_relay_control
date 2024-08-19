@@ -2,33 +2,41 @@
 # Bent Gramdal, April 2024
 
 import threading
-import serial
+import serial as s
+import serial.tools.list_ports as sl
 import time
 import sys
 import ch340_relay_cmd as m
 
 class Relay:
     def __init__(self,serialPort='COM7'):
-        self.port=serial.Serial(serialPort, 9600)
-        self.connected=False
         self.status=m.Status()  
         self.verbose=0              
         # The CH340 accepts a binary coded message to turn on/off or query the status
         self.onMsg  = [ b'\xA0\x01\x01\xA2', b'\xA0\x02\x01\xA3', b'\xA0\x03\x01\xA4', b'\xA0\x04\x01\xA5' ]
         self.offMsg = [ b'\xA0\x01\x00\xA1', b'\xA0\x02\x00\xA2', b'\xA0\x03\x00\xA3', b'\xA0\x04\x00\xA4' ]
         self.statMsg = b'\xFF'
-
+        try:
+            self.port=s.Serial(serialPort, 9600)
+            self.connected=True        
+        except:
+            print("Error for com port ",serialPort," - is it existing? List=")
+            ports=sl.comports()
+            for port,desc,hwid in sorted(ports):
+                print(f"{port}: id={hwid}, desc={desc}")
+            self.connected=False
+            
         # Spawn a thread that receives and decode any data from the CH340
-        
         self.thread = threading.Thread(target=self.read_from_port_thread_, args=())
         self.thread.start()
-
+        
+        
     def onOffStr(self,num):
         return self.status.onOffStr(num)
             
     def close(self):
-        self.connected=False
-        self.port.close()
+        if self.connected:
+            self.port.close()
 
     def check_status(self):
         if self.connected and self.port.is_open:
@@ -70,7 +78,6 @@ class Relay:
         #  'CH3: OFF\r\n' / 'CH3: ON\r\n'
         #  'CH4: OFF\r\n' / 'CH4: ON\r\n'
 
-        self.connected=True
         while self.connected:
             try:
                 chars = self.port.readline()
