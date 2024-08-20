@@ -52,7 +52,7 @@ class ClientConnection:
         self.on_close(self.index)
             
 class RelayServer:
-    def __init__(self,comPort,tcpPort):
+    def __init__(self,comPort,tcpPort,host='0.0.0.0'):
         self.relay=r.Relay(comPort)
         self.relay.check_status()        
         time.sleep(1)
@@ -60,13 +60,13 @@ class RelayServer:
         self.clients=[]
         self.client_index=0
         try:
-            self.host=socket.gethostname()
+            self.host=socket.gethostname() if not host else host
             self.tcpPort=tcpPort
             self.socket=socket.socket()
             self.socket.bind((self.host,self.tcpPort))
             self.socket.listen(10)
         except socket.error:
-            print(f'Hmm... socket issues to TCP port {tcpPort}, bail out')
+            print(f'Hmm... socket issues to TCP port {self.tcpPort} on {self.host}, bail out')
             return
         self.thread = threading.Thread(target=self.listener_, args=())
         self.thread.start()
@@ -158,13 +158,10 @@ class RelayServer:
         return self.relay.toggle(num)        
 
 if __name__ == "__main__":
-    tcpPort=12355
-    comPort='COM7'
-    if len(sys.argv)>1:
-        comPort=sys.argv[1];
-    if len(sys.argv)>2:
-        tcpPort=int(sys.argv[2]);
-    server=RelayServer(comPort,tcpPort)    
+    comPort='COM7' if len(sys.argv)<=1 else sys.argv[1]
+    tcpPort=12355  if len(sys.argv)<=2 else sys.argv[2]
+    host='0.0.0.0' if len(sys.argv)<=3 else sys.argv[3]
+    server=RelayServer(comPort,tcpPort,host)    
     while server.running:
         choice=m.menu(server.relay.status)
         if choice > 0 and choice < 9:
