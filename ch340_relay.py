@@ -9,21 +9,30 @@ import sys
 import ch340_relay_cmd as m
 
 class Relay:
-    def __init__(self,serialPort='COM7'):
+    def __init__(self,comPort=''):
         self.status=m.Status()  
         self.verbose=0              
         # The CH340 accepts a binary coded message to turn on/off or query the status
         self.onMsg  = [ b'\xA0\x01\x01\xA2', b'\xA0\x02\x01\xA3', b'\xA0\x03\x01\xA4', b'\xA0\x04\x01\xA5' ]
         self.offMsg = [ b'\xA0\x01\x00\xA1', b'\xA0\x02\x00\xA2', b'\xA0\x03\x00\xA3', b'\xA0\x04\x00\xA4' ]
         self.statMsg = b'\xFF'
+        ports=sl.comports()
+        if not comPort:
+            for port,desc,hwid in sorted(ports):
+                if 'CH340' in desc:
+                    comPort=port
+        if not comPort:
+            comPort='COM7'
+        for port,desc,hwid in sorted(ports):
+            if port == comPort:
+                print(f"Use {port}: id={hwid}, desc={desc}")                            
         try:
-            self.port=s.Serial(serialPort, 9600)
+            self.port=s.Serial(comPort, 9600)
             self.connected=True        
         except:
-            print("Error for com port ",serialPort," - is it existing? List=")
-            ports=sl.comports()
+            print(f"Error: {comPort} - is it existing? List=")
             for port,desc,hwid in sorted(ports):
-                print(f"{port}: id={hwid}, desc={desc}")
+                print(f"* {port}: id={hwid}, desc={desc}")
             self.connected=False
             
         # Spawn a thread that receives and decode any data from the CH340
@@ -99,10 +108,8 @@ class Relay:
 
 if __name__ == "__main__":
     # For run as standalone console app
-    com='COM7'
-    if len(sys.argv)>1:
-        com=sys.argv[1]
-    relay=Relay(com)
+    comPort='' if len(sys.argv)<=1 else sys.argv[1]
+    relay=Relay(comPort)
 
     print('--------------------------------')
     print('USB Serial CH340 - Relay control')

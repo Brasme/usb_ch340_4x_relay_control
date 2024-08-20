@@ -158,7 +158,7 @@ class RelayServer:
         return self.relay.toggle(num)        
 
 if __name__ == "__main__":
-    comPort='COM7' if len(sys.argv)<=1 else sys.argv[1]
+    comPort='' if len(sys.argv)<=1 else sys.argv[1]
     tcpPort=12355  if len(sys.argv)<=2 else sys.argv[2]
     host='0.0.0.0' if len(sys.argv)<=3 else sys.argv[3]
     server=RelayServer(comPort,tcpPort,host)    
